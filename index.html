@@ -2,51 +2,59 @@
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
-    <title>Shawarma Tycoon - Evolution Pro</title>
+    <title>Shawarma Tycoon - Evolution Pro Max</title>
     <style>
         :root { --p: #ff6b11; --s: #1a1a1a; --g: #f1c40f; --blue: #3498db; }
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #0a0a0a; color: white; display: flex; height: 100vh; overflow: hidden; }
         
-        /* --- SPELYTA --- */
-        #main { flex: 1.5; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border-right: 2px solid #333; }
-        #money-display { font-size: 4rem; color: var(--g); font-weight: 900; margin: 0; text-shadow: 0 0 20px rgba(241, 196, 15, 0.3); }
+        #main { flex: 1.5; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border-right: 2px solid #333; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); }
+        #money-display { font-size: 4rem; color: var(--g); font-weight: 900; margin: 0; text-shadow: 0 0 20px rgba(241, 196, 15, 0.5); transition: 0.1s; }
         
-        #shawarma { 
-            font-size: 150px; cursor: pointer; user-select: none; 
-            transition: transform 0.05s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            z-index: 10; 
-        }
+        /* BÄTTRE ANIMATIONER */
+        #shawarma { font-size: 150px; cursor: pointer; user-select: none; transition: transform 0.05s; z-index: 10; filter: drop-shadow(0 0 10px rgba(255,107,17,0.2)); }
         #shawarma:active { transform: scale(0.8) rotate(-5deg); }
-        
-        /* --- UNIKA MEKANIKER --- */
+        .fever { animation: vibrate 0.1s infinite; filter: drop-shadow(0 0 20px var(--p)) !important; }
+        @keyframes vibrate { 0% { transform: translate(1px, 1px); } 50% { transform: translate(-1px, -2px); } 100% { transform: translate(1px, 1px); } }
+
+        /* NYTT FRÅGESYSTEM (INTE POPUP) */
+        #quiz-ui { position: absolute; top: 20px; background: rgba(0,0,0,0.9); border: 2px solid var(--blue); padding: 15px; border-radius: 12px; display: none; text-align: center; z-index: 100; box-shadow: 0 0 20px var(--blue); }
+        .q-btn { padding: 8px 20px; margin: 5px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; color: white; }
+
+        /* SNYGGARE REGN */
+        .rain-drop { position: absolute; font-size: 50px; cursor: pointer; z-index: 99; animation: fall 3s linear forwards; filter: drop-shadow(0 0 15px gold); }
+        @keyframes fall { from { top: -100px; } to { top: 110vh; } }
+
         #kebab-spinner { width: 100px; height: 150px; background: #5d4037; margin: 20px; display: none; position: relative; border-radius: 10px; cursor: pointer; transition: 0.2s; border: 3px solid transparent; }
         #kebab-spinner.ready { border-color: var(--g); box-shadow: 0 0 20px var(--g); animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         #spinner-rod { width: 10px; height: 100%; background: #3e2723; margin: 0 auto; position: relative; }
 
-        #stock-market { width: 80%; height: 120px; background: #000; margin-top: 20px; display: none; border: 1px solid #444; position: relative; overflow: hidden; border-radius: 10px; }
+        #stock-market { width: 80%; height: 140px; background: #000; margin-top: 20px; display: none; border: 1px solid #444; position: relative; overflow: hidden; border-radius: 10px; padding: 5px; }
         .bar { position: absolute; bottom: 0; width: 15px; background: var(--p); transition: height 0.5s ease; border-top: 2px solid white; }
 
-        /* --- SHOP --- */
         #sidebar { width: 450px; background: var(--s); display: flex; flex-direction: column; }
         .header { padding: 20px; background: #111; text-align: center; border-bottom: 3px solid var(--p); font-weight: bold; }
         #upgrade-list { flex: 1; overflow-y: auto; padding: 15px; }
 
         .upg-card { background: #252525; margin-bottom: 10px; padding: 15px; border-radius: 10px; border: 2px solid #333; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
-        .upg-card:hover:not(.locked) { border-color: var(--blue); background: #2a2a2a; }
+        .upg-card:hover:not(.locked) { border-color: var(--blue); background: #2a2a2a; transform: translateX(-5px); }
         .upg-card.locked { opacity: 0.3; cursor: not-allowed; }
-        .upg-card.maxed { border-color: var(--g); cursor: default; }
 
-        /* Flytande text */
-        .pop { position: absolute; font-weight: bold; pointer-events: none; z-index: 100; font-size: 24px; }
+        #leaderboard { padding: 10px; background: #000; font-size: 12px; border-top: 2px solid #333; color: #888; }
+        .pop { position: absolute; font-weight: bold; pointer-events: none; z-index: 100; font-size: 24px; animation: flyUp 0.8s forwards; }
+        @keyframes flyUp { to { transform: translateY(-100px); opacity: 0; } }
     </style>
 </head>
 <body>
 
 <div id="main">
+    <div id="quiz-ui">
+        <div id="q-text" style="margin-bottom:10px">Fråga?</div>
+        <button class="q-btn" style="background:#2ecc71" onclick="answerQ(true)">JA</button>
+        <button class="q-btn" style="background:#e74c3c" onclick="answerQ(false)">NEJ</button>
+    </div>
+
     <div id="money-display">$0</div>
     <div id="status">Bli Shawarma Mastern!</div>
-    
     <div id="shawarma">🥙</div>
 
     <div id="kebab-spinner" onclick="claimSpinner()">
@@ -54,15 +62,20 @@
         <div style="position:absolute; bottom:-25px; width:100%; text-align:center; font-size:12px">SNURRARE</div>
     </div>
 
-    <div id="stock-market" onclick="sellStocks()">
-        <div style="position:absolute; top:5px; left:5px; font-size:10px; color:var(--blue); z-index:5">KEBAB STOCKS (Klicka för att sälja allt)</div>
-        <div id="chart" style="height:100%; display:flex; align-items:flex-end; gap:2px; justify-content:center"></div>
+    <div id="stock-market">
+        <div style="font-size:10px; color:var(--blue); margin-bottom:5px;">KEBAB STOCKS: $<span id="s-price">400</span> (Äger: <span id="s-owned">0</span>)</div>
+        <div id="chart" style="height:60px; display:flex; align-items:flex-end; gap:2px; position:relative"></div>
+        <div style="display:flex; gap:5px; margin-top:5px;">
+            <button onclick="buyStock()" style="flex:1; background:#2ecc71; border:none; color:white; font-weight:bold; cursor:pointer; border-radius:4px">KÖP MAX</button>
+            <button onclick="sellStocks()" style="flex:1; background:#e74c3c; border:none; color:white; font-weight:bold; cursor:pointer; border-radius:4px">SÄLJ ALLT</button>
+        </div>
     </div>
 </div>
 
 <div id="sidebar">
     <div class="header">🌯 SHAWARMA TYCOON PRO</div>
     <div id="upgrade-list"></div>
+    <div id="leaderboard"><b>TOPP MASTERS:</b><div id="leader-items"></div></div>
 </div>
 
 <script>
@@ -75,35 +88,98 @@
     let spinnerSpeed = 1;
     let spinnerReady = false;
     let stocksPrice = 400;
+    let stocksOwned = 0;
     let stockHistory = Array(25).fill(0);
+    let currentCorrect = null;
+    let playerName = prompt("Vad heter din shop?") || "Kebabkungen";
 
     const questions = [
         { q: "Är vitlökssåsen hemgjord?", a: true },
-        { q: "Har ni extra stark chili?", a: true },
         { q: "Har ni eptein rulle?", a: true },
         { q: "Får jag pacha i maten?", a: true },
-        { q: "Är kebab och shawarma exakt samma sak?", a: false },
-        { q: "Använder ni färskt pitabröd?", a: true },
-        { q: "Har ni öppet 25 timmar om dygnet?", a: false }
+        { q: "Är kebab och shawarma samma sak?", a: false },
+        { q: "Vill kunden ha extra sås?", a: true }
     ];
 
+    // --- 20 LEVELS AV UPGRADES ---
     const upgrades = [
-        { id: 1, n: "Extra Kött", c: 20, m: 30, count: 0, d: "+$1 per klick", act: () => clickPower += 1 },
-        { id: 2, n: "Stol", c: 50, m: 20, count: 0, d: "+$1 per sekund", act: () => pps += 1 },
-        { id: 3, n: "Worker", c: 100, m: 10, count: 0, d: "+$2 per sekund", act: () => pps += 2 },
-        { id: 4, n: "Golden Seasoning", c: 200, m: 1, count: 0, d: "10% chans för Golden Shawarma ($100)", act: () => goldChance = 0.1 },
-        { id: 5, n: "Kebab Snurrare", c: 2000, m: 10, count: 0, d: "Snurra 360° för $500 reward", act: () => { 
-            document.getElementById('kebab-spinner').style.display = 'block';
-            spinnerSpeed += 0.5;
-        }},
-        { id: 6, n: "Website", c: 10000, m: 1, count: 0, d: "Kundfrågor ger $5,000", act: () => startWebsite() },
-        { id: 7, n: "Kebab Stocks", c: 25000, m: 1, count: 0, d: "Låser upp börsen (Start $400)", act: () => document.getElementById('stock-market').style.display = 'block' },
-        { id: 8, n: "Sidoförsäljning", c: 50000, m: 10, count: 0, d: "+10% total inkomst", act: () => incomeMult += 0.1 },
-        { id: 9, n: "Automatiskt Claim", c: 150000, m: 1, count: 0, d: "Claimar spinnern automatiskt", act: () => {} },
-        { id: 10, n: "V.I.P Lounge", c: 500000, m: 1, count: 0, d: "Dubblar klick-värdet", act: () => clickPower *= 2 },
-        { id: 11, n: "Influencer Deal", c: 1500000, m: 1, count: 0, d: "Slumpmässiga pengar-regn", act: () => startRain() },
-        { id: 12, n: "Shawarma Mastern", c: 10000000, m: 1, count: 0, d: "Du har nått toppen!", act: () => alert("GRATTIS MASTER!") }
+        { id: 1, n: "Extra Kött", c: 20, m: 50, count: 0, d: "+$1 per klick", act: () => clickPower += 1 },
+        { id: 2, n: "Stol", c: 100, m: 30, count: 0, d: "+$2 per sekund", act: () => pps += 2 },
+        { id: 3, n: "Worker", c: 500, m: 20, count: 0, d: "+$10 per sekund", act: () => pps += 10 },
+        { id: 4, n: "Golden Seasoning", c: 2000, m: 1, count: 0, d: "10% chans för Guld-klick", act: () => goldChance = 0.1 },
+        { id: 5, n: "Kebab Snurrare", c: 5000, m: 10, count: 0, d: "Snurra för belöning", act: () => { document.getElementById('kebab-spinner').style.display = 'block'; spinnerSpeed += 0.5; }},
+        { id: 6, n: "Website", c: 15000, m: 1, count: 0, d: "Lås upp frågor", act: () => startWebsite() },
+        { id: 7, n: "Kebab Stocks", c: 40000, m: 1, count: 0, d: "Lås upp börsen", act: () => document.getElementById('stock-market').style.display = 'block' },
+        { id: 8, n: "Sidoförsäljning", c: 100000, m: 10, count: 0, d: "x1.2 inkomst", act: () => incomeMult *= 1.2 },
+        { id: 9, n: "Influencer Deal", c: 500000, m: 1, count: 0, d: "Lås upp rull-regn", act: () => startRain() },
+        { id: 10, n: "V.I.P Lounge", c: 1000000, m: 5, count: 0, d: "Dubbla klick", act: () => clickPower *= 2 },
+        { id: 11, n: "Kebab Robot", c: 5000000, m: 10, count: 0, d: "+$1k/sek", act: () => pps += 1000 },
+        { id: 12, n: "TV-Reklam", c: 20000000, m: 5, count: 0, d: "x2 inkomst", act: () => incomeMult *= 2 },
+        { id: 13, n: "Mega Restaurang", c: 100000000, m: 10, count: 0, d: "+$10k/sek", act: () => pps += 10000 },
+        { id: 14, n: "Guld-Svarv", c: 500000000, m: 1, count: 0, d: "Guld ger x500", act: () => goldChance = 0.25 },
+        { id: 15, n: "Global Franchise", c: 1000000000, m: 10, count: 0, d: "+$100k/sek", act: () => pps += 100000 },
+        { id: 16, n: "Kebab-Satellit", c: 5000000000, m: 1, count: 0, d: "x10 inkomst", act: () => incomeMult *= 10 },
+        { id: 17, n: "Mån-bas", c: 25000000000, m: 1, count: 0, d: "Klick ger $10M", act: () => clickPower += 10000000 },
+        { id: 18, n: "Tids-krydda", c: 100000000000, m: 1, count: 0, d: "Automatiskt regn", act: () => incomeMult *= 5 },
+        { id: 19, n: "Galax-Härskare", c: 500000000000, m: 1, count: 0, d: "Fever Mode x2", act: () => pps *= 2 },
+        { id: 20, n: "SHAWARMA GUD", c: 1000000000000, m: 1, count: 0, d: "DU ÄR KLAR!", act: () => alert("DU ÄR EN GUD!") }
     ];
+
+    function startWebsite() {
+        setInterval(() => {
+            const q = questions[Math.floor(Math.random() * questions.length)];
+            document.getElementById('q-text').innerText = "KUND: " + q.q;
+            document.getElementById('quiz-ui').style.display = 'block';
+            currentCorrect = q.a;
+            setTimeout(() => { document.getElementById('quiz-ui').style.display = 'none'; }, 8000);
+        }, 35000);
+    }
+
+    function answerQ(ans) {
+        if(ans === currentCorrect) { money += 10000 * incomeMult; alert("Rätt! +$10k"); }
+        else alert("Fel!");
+        document.getElementById('quiz-ui').style.display = 'none';
+        renderShop();
+    }
+
+    function startRain() {
+        setInterval(() => {
+            for(let i=0; i<3; i++) {
+                setTimeout(() => {
+                    const d = document.createElement('div');
+                    d.className = 'rain-drop'; d.innerText = "🌯";
+                    d.style.left = Math.random()*80 + "vw";
+                    document.body.appendChild(d);
+                    d.onclick = () => { money += 50000 * incomeMult; d.remove(); renderShop(); };
+                    setTimeout(() => d.remove(), 3000);
+                }, i*500);
+            }
+        }, 20000);
+    }
+
+    function buyStock() {
+        let max = Math.floor(money / stocksPrice);
+        if(max > 0) { money -= max * stocksPrice; stocksOwned += max; renderShop(); }
+    }
+
+    function sellStocks() {
+        if(stocksOwned > 0) { money += stocksOwned * stocksPrice; stocksOwned = 0; renderShop(); }
+    }
+
+    setInterval(() => {
+        if(upgrades[6].count > 0) {
+            stocksPrice = Math.max(10, stocksPrice + (Math.random()*80 - 38));
+            stockHistory.push(stocksPrice); stockHistory.shift();
+            document.getElementById('s-price').innerText = Math.floor(stocksPrice);
+            document.getElementById('s-owned').innerText = stocksOwned;
+            const chart = document.getElementById('chart'); chart.innerHTML = '';
+            stockHistory.forEach((p, i) => {
+                const b = document.createElement('div'); b.className = 'bar';
+                b.style.left = (i*16)+"px"; b.style.height = (p/8)+"px";
+                chart.appendChild(b);
+            });
+        }
+    }, 1500);
 
     function renderShop() {
         const list = document.getElementById('upgrade-list');
@@ -112,60 +188,86 @@
             const isMaxed = u.count >= u.m;
             const card = document.createElement('div');
             card.className = `upg-card ${money < u.c ? 'locked' : ''} ${isMaxed ? 'maxed' : ''}`;
-            card.onclick = () => buy(i);
+            card.onclick = () => {
+                if (money >= u.c && u.count < u.m) {
+                    money -= u.c; u.count++; u.act(); u.c = Math.floor(u.c * 1.4);
+                    renderShop(); saveGame();
+                }
+            };
             card.innerHTML = `<div><b>${u.n} (${u.count}/${u.m})</b><br><small>${u.d}</small></div>
                               <div style="color:var(--g)">${isMaxed ? 'MAX' : '$'+formatNum(u.c)}</div>`;
             list.appendChild(card);
         });
+        updateLeaderboard();
     }
 
     function formatNum(n) {
-        if (n >= 1000000) return (n/1000000).toFixed(1) + "M";
+        if (n >= 1e12) return (n/1e12).toFixed(1) + "T";
+        if (n >= 1e9) return (n/1e9).toFixed(1) + "B";
+        if (n >= 1e6) return (n/1e6).toFixed(1) + "M";
         if (n >= 1000) return (n/1000).toFixed(1) + "k";
         return Math.floor(n);
     }
 
-    function buy(i) {
-        let u = upgrades[i];
-        if (money >= u.c && u.count < u.m) {
-            money -= u.c;
-            u.count++;
-            u.act();
-            u.c = Math.floor(u.c * 1.35);
+    function claimSpinner() {
+        if (spinnerReady) {
+            money += 500 * incomeMult; spinnerReady = false;
+            document.getElementById('kebab-spinner').classList.remove('ready');
             renderShop();
         }
     }
 
     document.getElementById('shawarma').onclick = (e) => {
-        let gain = clickPower;
-        let isGold = Math.random() < goldChance;
-        if (isGold) gain = 100;
-        let totalGain = gain * incomeMult;
-        money += totalGain;
-        showPop(e, `+$${Math.floor(totalGain)}`, isGold ? 'gold' : 'white');
+        let gain = (Math.random() < goldChance ? 100 : clickPower) * incomeMult;
+        money += gain;
+        showPop(e, `+$${Math.floor(gain)}`, goldChance > 0 && Math.random() < goldChance ? 'gold' : 'white');
+        if(pps > 50) document.getElementById('shawarma').classList.add('fever');
         renderShop();
     };
 
     function showPop(e, txt, type) {
-        const p = document.createElement('div');
-        p.className = 'pop';
-        p.style.left = (e ? e.clientX : window.innerWidth/2) + 'px';
-        p.style.top = (e ? e.clientY : window.innerHeight/2) + 'px';
+        const p = document.createElement('div'); p.className = 'pop';
+        p.style.left = e.clientX + 'px'; p.style.top = e.clientY + 'px';
         p.style.color = type === 'gold' ? 'var(--g)' : 'white';
-        p.innerText = txt;
-        document.body.appendChild(p);
-        
-        let start = Date.now();
-        let timer = setInterval(() => {
-            let time = Date.now() - start;
-            p.style.top = (parseFloat(p.style.top) - 2) + 'px';
-            p.style.opacity = 1 - (time / 800);
-            if (time > 800) { clearInterval(timer); p.remove(); }
-        }, 16);
+        p.innerText = txt; document.body.appendChild(p);
+        setTimeout(() => p.remove(), 800);
     }
 
-    function updateSpinner() {
-        if (upgrades[4].count > 0 && !spinnerReady) {
+    function saveGame() {
+        const d = { money, clickPower, pps, incomeMult, goldChance, stocksOwned, uC: upgrades.map(u => u.count), uP: upgrades.map(u => u.c) };
+        localStorage.setItem('shawarma_vFinal', JSON.stringify(d));
+    }
+
+    function loadGame() {
+        const s = localStorage.getItem('shawarma_vFinal');
+        if (s) {
+            const d = JSON.parse(s);
+            money = d.money; clickPower = d.clickPower; pps = d.pps;
+            incomeMult = d.incomeMult; goldChance = d.goldChance; stocksOwned = d.stocksOwned || 0;
+            d.uC.forEach((count, i) => {
+                upgrades[i].count = count; upgrades[i].c = d.uP[i];
+                if (count > 0) {
+                    if (upgrades[i].id === 5) document.getElementById('kebab-spinner').style.display = 'block';
+                    if (upgrades[i].id === 6) startWebsite();
+                    if (upgrades[i].id === 7) document.getElementById('stock-market').style.display = 'block';
+                    if (upgrades[i].id === 9) startRain();
+                }
+            });
+        }
+    }
+
+    function updateLeaderboard() {
+        let lb = JSON.parse(localStorage.getItem('shawarma_lb') || "[]");
+        let my = lb.find(x => x.n === playerName);
+        if(my) my.m = Math.max(my.m, money); else lb.push({n:playerName, m:money});
+        lb.sort((a,b) => b.m - a.m);
+        localStorage.setItem('shawarma_lb', JSON.stringify(lb.slice(0,5)));
+        document.getElementById('leader-items').innerHTML = lb.slice(0,5).map(x => `<div>${x.n}: $${formatNum(x.m)}</div>`).join('');
+    }
+
+    setInterval(() => {
+        money += (pps * incomeMult) / 10;
+        if(upgrades[4].count > 0 && !spinnerReady) {
             spinnerRotation += spinnerSpeed;
             document.getElementById('spinner-rod').style.transform = `rotate(${spinnerRotation}deg)`;
             if (spinnerRotation >= 360) {
@@ -174,135 +276,13 @@
                 if (upgrades[8].count > 0) claimSpinner();
             }
         }
-    }
-
-    function claimSpinner() {
-        if (spinnerReady) {
-            money += 500 * incomeMult;
-            spinnerReady = false;
-            document.getElementById('kebab-spinner').classList.remove('ready');
-            renderShop();
-        }
-    }
-
-    function startWebsite() {
-        setInterval(() => {
-            let quest = questions[Math.floor(Math.random() * questions.length)];
-            if (confirm(`KUNDFRÅGA: ${quest.q}`)) {
-                if (quest.a === true) { money += 5000 * incomeMult; alert("Kunden är supernöjd! +$5,000"); }
-                else { alert("Kunden blev arg... fel svar!"); }
-            } else {
-                if (quest.a === false) { money += 5000 * incomeMult; alert("Bra svar! Kunden håller med. +$5,000"); }
-                else { alert("Kunden ville ha ett JA... du förlorade chansen."); }
-            }
-            renderShop();
-        }, 60000);
-    }
-
-    function sellStocks() {
-        if(upgrades[6].count > 0) {
-            money += stocksPrice;
-            stocksPrice = 400;
-            renderShop();
-        }
-    }
-
-    // Uppdaterad Börs-logik
-    setInterval(() => {
-        if (upgrades[6].count > 0) {
-            let change = (Math.random() * 60) - 28; // Ändras mer dramatiskt
-            stocksPrice = Math.max(10, stocksPrice + change);
-            stockHistory.push(stocksPrice);
-            stockHistory.shift();
-            
-            const chart = document.getElementById('chart');
-            chart.innerHTML = '';
-            stockHistory.forEach(p => {
-                const b = document.createElement('div');
-                b.className = 'bar';
-                b.style.height = (p / 6) + "px"; // Skalning för att passa boxen
-                chart.appendChild(b);
-            });
-        }
-    }, 1000);
-
-    function startRain() {
-        setInterval(() => {
-            const drop = document.createElement('div');
-            drop.innerText = "🌯";
-            drop.style.position = 'absolute';
-            drop.style.left = Math.random() * 80 + "vw";
-            drop.style.top = "-50px";
-            drop.style.fontSize = "40px";
-            drop.style.cursor = "pointer";
-            drop.style.transition = "top 3s linear";
-            document.body.appendChild(drop);
-            setTimeout(() => drop.style.top = "110vh", 100);
-            drop.onclick = () => { money += 10000 * incomeMult; drop.remove(); renderShop(); };
-            setTimeout(() => drop.remove(), 3100);
-        }, 20000);
-    }
-
-    setInterval(() => {
-        money += (pps * incomeMult) / 10;
-        updateSpinner();
         document.getElementById('money-display').innerText = "$" + Math.floor(money).toLocaleString();
     }, 100);
 
     window.onkeydown = (e) => { if(e.code === "Space") document.getElementById('shawarma').click(); };
-    renderShop();
-    // 1. SKAPA SPAR-FUNKTIONEN
-    function saveGame() {
-        const gameData = {
-            money: money,
-            clickPower: clickPower,
-            pps: pps,
-            incomeMult: incomeMult,
-            goldChance: goldChance,
-            upgradeCounts: upgrades.map(u => u.count),
-            upgradeCosts: upgrades.map(u => u.c)
-        };
-        localStorage.setItem('shawarmaSimulatorSave', JSON.stringify(gameData));
-    }
-
-    // 2. SKAPA LADDA-FUNKTIONEN
-    function loadGame() {
-        const savedData = localStorage.getItem('shawarmaSimulatorSave');
-        if (savedData) {
-            const data = JSON.parse(savedData);
-            money = data.money;
-            clickPower = data.clickPower;
-            pps = data.pps;
-            incomeMult = data.incomeMult;
-            goldChance = data.goldChance;
-
-            data.upgradeCounts.forEach((count, i) => {
-                upgrades[i].count = count;
-                upgrades[i].c = data.upgradeCosts[i];
-                
-                // Aktivera funktioner för saker man redan köpt
-                if (count > 0) {
-                    if (upgrades[i].id === 5) document.getElementById('kebab-spinner').style.display = 'block';
-                    if (upgrades[i].id === 6) startWebsite();
-                    if (upgrades[i].id === 7) document.getElementById('stock-market').style.display = 'block';
-                    if (upgrades[i].id === 11) startRain();
-                }
-            });
-        }
-    }
-
-    // 3. KÖR LADDA DIREKT NÄR SIDAN ÖPPNAS
     loadGame();
-
-    // 4. AUTO-SPARA VARJE MINUT
-    setInterval(saveGame, 60000);
-
-    // 5. SPARA VID VARJE KLICK PÅ SHAWARMAN (VALFRITT MEN SÄKERT)
-    document.getElementById('shawarma').addEventListener('click', saveGame);
-
+    renderShop();
+    setInterval(saveGame, 30000);
 </script> 
 </body>
 </html>
-    
-
-
