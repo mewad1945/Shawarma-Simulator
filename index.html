@@ -252,5 +252,69 @@
     window.onkeydown = (e) => { if(e.code === "Space") document.getElementById('shawarma').click(); };
     renderShop();
 </script>
+        // --- SPARFUNKTIONER ---
+    function saveGame() {
+        const gameData = {
+            money: money,
+            clickPower: clickPower,
+            pps: pps,
+            incomeMult: incomeMult,
+            goldChance: goldChance,
+            upgradeCounts: upgrades.map(u => u.count),
+            upgradeCosts: upgrades.map(u => u.c)
+        };
+        localStorage.setItem('shawarmaSave', JSON.stringify(gameData));
+    }
+
+    function loadGame() {
+        const savedData = localStorage.getItem('shawarmaSave');
+        if (savedData) {
+            const data = JSON.parse(savedData);
+            money = data.money;
+            clickPower = data.clickPower;
+            pps = data.pps;
+            incomeMult = data.incomeMult;
+            goldChance = data.goldChance;
+            
+            // Återställ uppgraderingar
+            data.upgradeCounts.forEach((count, i) => {
+                upgrades[i].count = count;
+                upgrades[i].c = data.upgradeCosts[i];
+                // Kör effekten för de uppgraderingar som är köpta (t.ex. visa spinnern)
+                if (count > 0) {
+                    if (upgrades[i].id === 5) document.getElementById('kebab-spinner').style.display = 'block';
+                    if (upgrades[i].id === 7) document.getElementById('stock-market').style.display = 'block';
+                }
+            });
+        }
+    }
+
+    function claimSpinner() {
+        if (spinnerReady) {
+            money += 500 * incomeMult;
+            spinnerReady = false;
+            document.getElementById('kebab-spinner').classList.remove('ready');
+            saveGame(); // Spara när man får pengar
+        }
+    }
+
+    // --- GAME LOOP ---
+    setInterval(() => {
+        money += (pps * incomeMult) / 10;
+        updateSpinner();
+        document.getElementById('money-display').innerText = "$" + Math.floor(money);
+        renderShop();
+    }, 100);
+
+    // Spara automatiskt var 30:e sekund
+    setInterval(saveGame, 30000);
+
+    // Körs när sidan laddas
+    loadGame();
+    renderShop();
+</script>
+</body>
+</html>
+
 </body>
 </html>
