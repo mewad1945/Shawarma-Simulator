@@ -2,32 +2,35 @@
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
-    <title>Shawarma Tycoon - Evolution Pro Max</title>
+    <title>Shawarma Tycoon - Evolution Pro Max GOLD</title>
     <style>
-        :root { --p: #ff6b11; --s: #1a1a1a; --g: #f1c40f; --blue: #3498db; }
+        :root { --p: #ff6b11; --s: #1a1a1a; --g: #f1c40f; --blue: #3498db; --purp: #9b59b6; }
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #0a0a0a; color: white; display: flex; height: 100vh; overflow: hidden; }
         
         #main { flex: 1.5; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border-right: 2px solid #333; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); }
-        #money-display { font-size: 4rem; color: var(--g); font-weight: 900; margin: 0; text-shadow: 0 0 20px rgba(241, 196, 15, 0.5); transition: 0.1s; }
+        #money-display { font-size: 4rem; color: var(--g); font-weight: 900; margin: 0; text-shadow: 0 0 20px rgba(241, 196, 15, 0.5); }
         
-        /* BÄTTRE ANIMATIONER */
-        #shawarma { font-size: 150px; cursor: pointer; user-select: none; transition: transform 0.05s; z-index: 10; filter: drop-shadow(0 0 10px rgba(255,107,17,0.2)); }
+        /* SHAWAMRA & ANIMATIONER */
+        #shawarma { font-size: 150px; cursor: pointer; user-select: none; transition: transform 0.05s; z-index: 10; }
         #shawarma:active { transform: scale(0.8) rotate(-5deg); }
         .fever { animation: vibrate 0.1s infinite; filter: drop-shadow(0 0 20px var(--p)) !important; }
         @keyframes vibrate { 0% { transform: translate(1px, 1px); } 50% { transform: translate(-1px, -2px); } 100% { transform: translate(1px, 1px); } }
 
-        /* NYTT FRÅGESYSTEM (INTE POPUP) */
-        #quiz-ui { position: absolute; top: 20px; background: rgba(0,0,0,0.9); border: 2px solid var(--blue); padding: 15px; border-radius: 12px; display: none; text-align: center; z-index: 100; box-shadow: 0 0 20px var(--blue); }
-        .q-btn { padding: 8px 20px; margin: 5px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; color: white; }
+        /* AESTHETIC SHOP */
+        #skin-shop { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.9); border: 2px solid var(--purp); padding: 15px; border-radius: 12px; display: none; z-index: 100; box-shadow: 0 0 15px var(--purp); }
+        .skin-btn { background: #333; border: 1px solid var(--purp); color: white; padding: 8px; cursor: pointer; margin: 2px; border-radius: 5px; font-size: 20px; }
 
-        /* SNYGGARE REGN */
-        .rain-drop { position: absolute; font-size: 50px; cursor: pointer; z-index: 99; animation: fall 3s linear forwards; filter: drop-shadow(0 0 15px gold); }
-        @keyframes fall { from { top: -100px; } to { top: 110vh; } }
-
+        /* DIN SNURRARE */
         #kebab-spinner { width: 100px; height: 150px; background: #5d4037; margin: 20px; display: none; position: relative; border-radius: 10px; cursor: pointer; transition: 0.2s; border: 3px solid transparent; }
         #kebab-spinner.ready { border-color: var(--g); box-shadow: 0 0 20px var(--g); animation: pulse 1s infinite; }
         #spinner-rod { width: 10px; height: 100%; background: #3e2723; margin: 0 auto; position: relative; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
+        /* FRÅGESYSTEM (INTE POPUP) */
+        #quiz-ui { position: absolute; top: 20px; background: rgba(0,0,0,0.9); border: 2px solid var(--blue); padding: 15px; border-radius: 12px; display: none; text-align: center; z-index: 100; }
+        .q-btn { padding: 8px 20px; margin: 5px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; color: white; }
+
+        /* BÖRSEN */
         #stock-market { width: 80%; height: 140px; background: #000; margin-top: 20px; display: none; border: 1px solid #444; position: relative; overflow: hidden; border-radius: 10px; padding: 5px; }
         .bar { position: absolute; bottom: 0; width: 15px; background: var(--p); transition: height 0.5s ease; border-top: 2px solid white; }
 
@@ -36,15 +39,26 @@
         #upgrade-list { flex: 1; overflow-y: auto; padding: 15px; }
 
         .upg-card { background: #252525; margin-bottom: 10px; padding: 15px; border-radius: 10px; border: 2px solid #333; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
-        .upg-card:hover:not(.locked) { border-color: var(--blue); background: #2a2a2a; transform: translateX(-5px); }
+        .upg-card:hover:not(.locked) { border-color: var(--blue); transform: translateX(-5px); }
         .upg-card.locked { opacity: 0.3; cursor: not-allowed; }
+        .upg-card.maxed { border-color: var(--g); cursor: default; }
 
         #leaderboard { padding: 10px; background: #000; font-size: 12px; border-top: 2px solid #333; color: #888; }
         .pop { position: absolute; font-weight: bold; pointer-events: none; z-index: 100; font-size: 24px; animation: flyUp 0.8s forwards; }
         @keyframes flyUp { to { transform: translateY(-100px); opacity: 0; } }
+        .rain-drop { position: absolute; font-size: 50px; cursor: pointer; animation: fall 3s linear forwards; z-index: 99; }
+        @keyframes fall { from { top: -100px; } to { top: 110vh; } }
     </style>
 </head>
 <body>
+
+<div id="skin-shop">
+    <div style="font-size: 10px; color: var(--purp); margin-bottom: 5px;">AESTHETIC SHOP (Unlocked @ $10k)</div>
+    <button class="skin-btn" onclick="changeSkin('🥙')">🥙</button>
+    <button class="skin-btn" onclick="changeSkin('🌯')">🌯</button>
+    <button class="skin-btn" onclick="changeSkin('🍖')">🍖</button>
+    <button class="skin-btn" onclick="changeSkin('🍕')">🍕</button>
+</div>
 
 <div id="main">
     <div id="quiz-ui">
@@ -54,7 +68,8 @@
     </div>
 
     <div id="money-display">$0</div>
-    <div id="status">Bli Shawarma Mastern!</div>
+    <div id="status" style="color: var(--purp); font-weight: bold; margin-bottom: 10px;"></div>
+    
     <div id="shawarma">🥙</div>
 
     <div id="kebab-spinner" onclick="claimSpinner()">
@@ -73,7 +88,10 @@
 </div>
 
 <div id="sidebar">
-    <div class="header">🌯 SHAWARMA TYCOON PRO</div>
+    <div class="header">
+        🌯 SHAWARMA TYCOON PRO<br>
+        <button id="prestige-btn" onclick="doPrestige()" style="display:none; background:var(--purp); color:white; border:none; padding:8px; border-radius:5px; margin-top:10px; cursor:pointer; font-weight:bold; width:100%; box-shadow: 0 0 10px var(--purp);">PRESTIGE NU (2X ALLT)</button>
+    </div>
     <div id="upgrade-list"></div>
     <div id="leaderboard"><b>TOPP MASTERS:</b><div id="leader-items"></div></div>
 </div>
@@ -84,6 +102,7 @@
     let pps = 0;
     let incomeMult = 1.0;
     let goldChance = 0;
+    let prestigeLevel = 0;
     let spinnerRotation = 0;
     let spinnerSpeed = 1;
     let spinnerReady = false;
@@ -98,115 +117,43 @@
         { q: "Har ni eptein rulle?", a: true },
         { q: "Får jag pacha i maten?", a: true },
         { q: "Är kebab och shawarma samma sak?", a: false },
-        { q: "Vill kunden ha extra sås?", a: true }
+        { q: "Använder ni färskt pitabröd?", a: true }
     ];
 
-    // --- 20 LEVELS AV UPGRADES ---
+    // DIN ORIGINAL-LISTA UTBYGGD TILL 20 STYCKEN
     const upgrades = [
-        { id: 1, n: "Extra Kött", c: 20, m: 50, count: 0, d: "+$1 per klick", act: () => clickPower += 1 },
-        { id: 2, n: "Stol", c: 100, m: 30, count: 0, d: "+$2 per sekund", act: () => pps += 2 },
-        { id: 3, n: "Worker", c: 500, m: 20, count: 0, d: "+$10 per sekund", act: () => pps += 10 },
-        { id: 4, n: "Golden Seasoning", c: 2000, m: 1, count: 0, d: "10% chans för Guld-klick", act: () => goldChance = 0.1 },
-        { id: 5, n: "Kebab Snurrare", c: 5000, m: 10, count: 0, d: "Snurra för belöning", act: () => { document.getElementById('kebab-spinner').style.display = 'block'; spinnerSpeed += 0.5; }},
-        { id: 6, n: "Website", c: 15000, m: 1, count: 0, d: "Lås upp frågor", act: () => startWebsite() },
-        { id: 7, n: "Kebab Stocks", c: 40000, m: 1, count: 0, d: "Lås upp börsen", act: () => document.getElementById('stock-market').style.display = 'block' },
-        { id: 8, n: "Sidoförsäljning", c: 100000, m: 10, count: 0, d: "x1.2 inkomst", act: () => incomeMult *= 1.2 },
-        { id: 9, n: "Influencer Deal", c: 500000, m: 1, count: 0, d: "Lås upp rull-regn", act: () => startRain() },
-        { id: 10, n: "V.I.P Lounge", c: 1000000, m: 5, count: 0, d: "Dubbla klick", act: () => clickPower *= 2 },
-        { id: 11, n: "Kebab Robot", c: 5000000, m: 10, count: 0, d: "+$1k/sek", act: () => pps += 1000 },
-        { id: 12, n: "TV-Reklam", c: 20000000, m: 5, count: 0, d: "x2 inkomst", act: () => incomeMult *= 2 },
-        { id: 13, n: "Mega Restaurang", c: 100000000, m: 10, count: 0, d: "+$10k/sek", act: () => pps += 10000 },
-        { id: 14, n: "Guld-Svarv", c: 500000000, m: 1, count: 0, d: "Guld ger x500", act: () => goldChance = 0.25 },
-        { id: 15, n: "Global Franchise", c: 1000000000, m: 10, count: 0, d: "+$100k/sek", act: () => pps += 100000 },
-        { id: 16, n: "Kebab-Satellit", c: 5000000000, m: 1, count: 0, d: "x10 inkomst", act: () => incomeMult *= 10 },
+        { id: 1, n: "Extra Kött", c: 20, m: 30, count: 0, d: "+$1 per klick", act: () => clickPower += 1 },
+        { id: 2, n: "Stol", c: 50, m: 20, count: 0, d: "+$1 per sekund", act: () => pps += 1 },
+        { id: 3, n: "Worker", c: 100, m: 10, count: 0, d: "+$2 per sekund", act: () => pps += 2 },
+        { id: 4, n: "Golden Seasoning", c: 200, m: 1, count: 0, d: "10% chans för Guld ($100)", act: () => goldChance = 0.1 },
+        { id: 5, n: "Kebab Snurrare", c: 2000, m: 10, count: 0, d: "Snurra 360° för $500", act: () => { document.getElementById('kebab-spinner').style.display = 'block'; spinnerSpeed += 0.5; }},
+        { id: 6, n: "Website", c: 10000, m: 1, count: 0, d: "Kundfrågor i UI", act: () => startWebsite() },
+        { id: 7, n: "Kebab Stocks", c: 25000, m: 1, count: 0, d: "Lås upp börsen", act: () => document.getElementById('stock-market').style.display = 'block' },
+        { id: 8, n: "Sidoförsäljning", c: 50000, m: 10, count: 0, d: "+10% inkomst", act: () => incomeMult += 0.1 },
+        { id: 9, n: "Automatiskt Claim", c: 150000, m: 1, count: 0, d: "Auto-spinner", act: () => {} },
+        { id: 10, n: "V.I.P Lounge", c: 500000, m: 5, count: 0, d: "Dubbla klick", act: () => clickPower *= 2 },
+        { id: 11, n: "Influencer Deal", c: 1500000, m: 1, count: 0, d: "Rull-regn", act: () => startRain() },
+        { id: 12, n: "Mastern", c: 10000000, m: 1, count: 0, d: "Lås upp PRESTIGE", act: () => document.getElementById('prestige-btn').style.display = 'block' },
+        { id: 13, n: "Kebab Robot", c: 50000000, m: 10, count: 0, d: "+$5k/sek", act: () => pps += 5000 },
+        { id: 14, n: "TV Reklam", c: 200000000, m: 5, count: 0, d: "x2 total vinst", act: () => incomeMult *= 2 },
+        { id: 15, n: "Global Kedja", c: 1000000000, m: 10, count: 0, d: "+$50k/sek", act: () => pps += 50000 },
+        { id: 16, n: "Kebab Satellit", c: 5000000000, m: 5, count: 0, d: "x5 inkomst", act: () => incomeMult *= 5 },
         { id: 17, n: "Mån-bas", c: 25000000000, m: 1, count: 0, d: "Klick ger $10M", act: () => clickPower += 10000000 },
         { id: 18, n: "Tids-krydda", c: 100000000000, m: 1, count: 0, d: "Automatiskt regn", act: () => incomeMult *= 5 },
         { id: 19, n: "Galax-Härskare", c: 500000000000, m: 1, count: 0, d: "Fever Mode x2", act: () => pps *= 2 },
-        { id: 20, n: "SHAWARMA GUD", c: 1000000000000, m: 1, count: 0, d: "DU ÄR KLAR!", act: () => alert("DU ÄR EN GUD!") }
+        { id: 20, n: "SHAWARMA GOD", c: 1000000000000, m: 1, count: 0, d: "UNIVERSE MASTER", act: () => alert("DU ÄR EN GUD!") }
     ];
 
-    function startWebsite() {
-        setInterval(() => {
-            const q = questions[Math.floor(Math.random() * questions.length)];
-            document.getElementById('q-text').innerText = "KUND: " + q.q;
-            document.getElementById('quiz-ui').style.display = 'block';
-            currentCorrect = q.a;
-            setTimeout(() => { document.getElementById('quiz-ui').style.display = 'none'; }, 8000);
-        }, 35000);
-    }
-
-    function answerQ(ans) {
-        if(ans === currentCorrect) { money += 10000 * incomeMult; alert("Rätt! +$10k"); }
-        else alert("Fel!");
-        document.getElementById('quiz-ui').style.display = 'none';
-        renderShop();
-    }
-
-    function startRain() {
-        setInterval(() => {
-            for(let i=0; i<3; i++) {
-                setTimeout(() => {
-                    const d = document.createElement('div');
-                    d.className = 'rain-drop'; d.innerText = "🌯";
-                    d.style.left = Math.random()*80 + "vw";
-                    document.body.appendChild(d);
-                    d.onclick = () => { money += 50000 * incomeMult; d.remove(); renderShop(); };
-                    setTimeout(() => d.remove(), 3000);
-                }, i*500);
+    function updateSpinner() {
+        if (upgrades[4].count > 0 && !spinnerReady) {
+            spinnerRotation += spinnerSpeed;
+            document.getElementById('spinner-rod').style.transform = `rotate(${spinnerRotation}deg)`;
+            if (spinnerRotation >= 360) {
+                spinnerRotation = 0; spinnerReady = true;
+                document.getElementById('kebab-spinner').classList.add('ready');
+                if (upgrades[8].count > 0) claimSpinner();
             }
-        }, 20000);
-    }
-
-    function buyStock() {
-        let max = Math.floor(money / stocksPrice);
-        if(max > 0) { money -= max * stocksPrice; stocksOwned += max; renderShop(); }
-    }
-
-    function sellStocks() {
-        if(stocksOwned > 0) { money += stocksOwned * stocksPrice; stocksOwned = 0; renderShop(); }
-    }
-
-    setInterval(() => {
-        if(upgrades[6].count > 0) {
-            stocksPrice = Math.max(10, stocksPrice + (Math.random()*80 - 38));
-            stockHistory.push(stocksPrice); stockHistory.shift();
-            document.getElementById('s-price').innerText = Math.floor(stocksPrice);
-            document.getElementById('s-owned').innerText = stocksOwned;
-            const chart = document.getElementById('chart'); chart.innerHTML = '';
-            stockHistory.forEach((p, i) => {
-                const b = document.createElement('div'); b.className = 'bar';
-                b.style.left = (i*16)+"px"; b.style.height = (p/8)+"px";
-                chart.appendChild(b);
-            });
         }
-    }, 1500);
-
-    function renderShop() {
-        const list = document.getElementById('upgrade-list');
-        list.innerHTML = '';
-        upgrades.forEach((u, i) => {
-            const isMaxed = u.count >= u.m;
-            const card = document.createElement('div');
-            card.className = `upg-card ${money < u.c ? 'locked' : ''} ${isMaxed ? 'maxed' : ''}`;
-            card.onclick = () => {
-                if (money >= u.c && u.count < u.m) {
-                    money -= u.c; u.count++; u.act(); u.c = Math.floor(u.c * 1.4);
-                    renderShop(); saveGame();
-                }
-            };
-            card.innerHTML = `<div><b>${u.n} (${u.count}/${u.m})</b><br><small>${u.d}</small></div>
-                              <div style="color:var(--g)">${isMaxed ? 'MAX' : '$'+formatNum(u.c)}</div>`;
-            list.appendChild(card);
-        });
-        updateLeaderboard();
-    }
-
-    function formatNum(n) {
-        if (n >= 1e12) return (n/1e12).toFixed(1) + "T";
-        if (n >= 1e9) return (n/1e9).toFixed(1) + "B";
-        if (n >= 1e6) return (n/1e6).toFixed(1) + "M";
-        if (n >= 1000) return (n/1000).toFixed(1) + "k";
-        return Math.floor(n);
     }
 
     function claimSpinner() {
@@ -217,40 +164,132 @@
         }
     }
 
+    function startWebsite() {
+        setInterval(() => {
+            const q = questions[Math.floor(Math.random() * questions.length)];
+            document.getElementById('q-text').innerText = "KUND: " + q.q;
+            document.getElementById('quiz-ui').style.display = 'block';
+            currentCorrect = q.a;
+            setTimeout(() => { document.getElementById('quiz-ui').style.display = 'none'; }, 8000);
+        }, 40000);
+    }
+
+    function answerQ(ans) {
+        if(ans === currentCorrect) { money += 5000 * incomeMult; alert("Rätt! +$5k"); }
+        else alert("Fel!");
+        document.getElementById('quiz-ui').style.display = 'none';
+        renderShop();
+    }
+
+    function buyStock() {
+        let max = Math.floor(money / stocksPrice);
+        if(max > 0) { money -= max * stocksPrice; stocksOwned += max; renderShop(); }
+    }
+
+    function sellStocks() {
+        money += stocksOwned * stocksPrice; stocksOwned = 0; renderShop();
+    }
+
+    setInterval(() => {
+        if (upgrades[6].count > 0) {
+            stocksPrice = Math.max(10, stocksPrice + (Math.random()*80 - 38));
+            stockHistory.push(stocksPrice); stockHistory.shift();
+            document.getElementById('s-price').innerText = Math.floor(stocksPrice);
+            document.getElementById('s-owned').innerText = stocksOwned;
+            const chart = document.getElementById('chart'); chart.innerHTML = '';
+            stockHistory.forEach((p, i) => {
+                const b = document.createElement('div'); b.className = 'bar';
+                b.style.left = (i*16.5)+"px"; b.style.height = (p/8)+"px";
+                chart.appendChild(b);
+            });
+        }
+    }, 1500);
+
+    function doPrestige() {
+        if(confirm("Starta om för x2 permanent bonus?")) {
+            prestigeLevel++; incomeMult *= 2; money = 0; pps = 0; clickPower = 1 + prestigeLevel;
+            upgrades.forEach(u => { u.count = 0; });
+            saveGame(); location.reload();
+        }
+    }
+
+    function changeSkin(emoji) { document.getElementById('shawarma').innerText = emoji; saveGame(); }
+
+    function startRain() {
+        setInterval(() => {
+            const d = document.createElement('div');
+            d.className = 'rain-drop'; d.innerText = "🌯";
+            d.style.left = Math.random()*80 + "vw";
+            document.body.appendChild(d);
+            d.onclick = () => { money += 50000 * incomeMult; d.remove(); renderShop(); };
+            setTimeout(() => d.remove(), 3000);
+        }, 20000);
+    }
+
+    function formatNum(n) {
+        if (n >= 1e12) return (n/1e12).toFixed(1) + "T";
+        if (n >= 1e9) return (n/1e9).toFixed(1) + "B";
+        if (n >= 1e6) return (n/1e6).toFixed(1) + "M";
+        if (n >= 1000) return (n/1000).toFixed(1) + "k";
+        return Math.floor(n);
+    }
+
+    function renderShop() {
+        const list = document.getElementById('upgrade-list');
+        list.innerHTML = '';
+        upgrades.forEach((u, i) => {
+            const isMaxed = u.count >= u.m;
+            const card = document.createElement('div');
+            card.className = `upg-card ${money < u.c ? 'locked' : ''} ${isMaxed ? 'maxed' : ''}`;
+            card.onclick = () => {
+                if (money >= u.c && u.count < u.m) {
+                    money -= u.c; u.count++; u.act(); u.c = Math.floor(u.c * 1.35);
+                    renderShop(); saveGame();
+                }
+            };
+            card.innerHTML = `<div><b>${u.n} (${u.count}/${u.m})</b><br><small>${u.d}</small></div>
+                              <div style="color:var(--g)">${isMaxed ? 'MAX' : '$'+formatNum(u.c)}</div>`;
+            list.appendChild(card);
+        });
+        if(money >= 10000) document.getElementById('skin-shop').style.display = 'block';
+        document.getElementById('status').innerText = prestigeLevel > 0 ? "PRESTIGE RANK: " + prestigeLevel : "";
+        updateLeaderboard();
+    }
+
     document.getElementById('shawarma').onclick = (e) => {
         let gain = (Math.random() < goldChance ? 100 : clickPower) * incomeMult;
         money += gain;
-        showPop(e, `+$${Math.floor(gain)}`, goldChance > 0 && Math.random() < goldChance ? 'gold' : 'white');
+        showPop(e, `+$${Math.floor(gain)}`);
         if(pps > 50) document.getElementById('shawarma').classList.add('fever');
         renderShop();
     };
 
-    function showPop(e, txt, type) {
+    function showPop(e, txt) {
         const p = document.createElement('div'); p.className = 'pop';
         p.style.left = e.clientX + 'px'; p.style.top = e.clientY + 'px';
-        p.style.color = type === 'gold' ? 'var(--g)' : 'white';
         p.innerText = txt; document.body.appendChild(p);
         setTimeout(() => p.remove(), 800);
     }
 
     function saveGame() {
-        const d = { money, clickPower, pps, incomeMult, goldChance, stocksOwned, uC: upgrades.map(u => u.count), uP: upgrades.map(u => u.c) };
-        localStorage.setItem('shawarma_vFinal', JSON.stringify(d));
+        const d = { money, clickPower, pps, incomeMult, prestigeLevel, skin: document.getElementById('shawarma').innerText, uC: upgrades.map(u => u.count), uP: upgrades.map(u => u.c) };
+        localStorage.setItem('shawarma_vFinal_Full', JSON.stringify(d));
     }
 
     function loadGame() {
-        const s = localStorage.getItem('shawarma_vFinal');
+        const s = localStorage.getItem('shawarma_vFinal_Full');
         if (s) {
             const d = JSON.parse(s);
             money = d.money; clickPower = d.clickPower; pps = d.pps;
-            incomeMult = d.incomeMult; goldChance = d.goldChance; stocksOwned = d.stocksOwned || 0;
+            incomeMult = d.incomeMult; prestigeLevel = d.prestigeLevel || 0;
+            document.getElementById('shawarma').innerText = d.skin || '🥙';
             d.uC.forEach((count, i) => {
                 upgrades[i].count = count; upgrades[i].c = d.uP[i];
                 if (count > 0) {
                     if (upgrades[i].id === 5) document.getElementById('kebab-spinner').style.display = 'block';
                     if (upgrades[i].id === 6) startWebsite();
                     if (upgrades[i].id === 7) document.getElementById('stock-market').style.display = 'block';
-                    if (upgrades[i].id === 9) startRain();
+                    if (upgrades[i].id === 11) startRain();
                 }
             });
         }
@@ -262,27 +301,19 @@
         if(my) my.m = Math.max(my.m, money); else lb.push({n:playerName, m:money});
         lb.sort((a,b) => b.m - a.m);
         localStorage.setItem('shawarma_lb', JSON.stringify(lb.slice(0,5)));
-        document.getElementById('leader-items').innerHTML = lb.slice(0,5).map(x => `<div>${x.n}: $${formatNum(x.m)}</div>`).join('');
+        document.getElementById('leader-items').innerHTML = lb.map(x => `<div>${x.n}: $${formatNum(x.m)}</div>`).join('');
     }
 
     setInterval(() => {
         money += (pps * incomeMult) / 10;
-        if(upgrades[4].count > 0 && !spinnerReady) {
-            spinnerRotation += spinnerSpeed;
-            document.getElementById('spinner-rod').style.transform = `rotate(${spinnerRotation}deg)`;
-            if (spinnerRotation >= 360) {
-                spinnerRotation = 0; spinnerReady = true;
-                document.getElementById('kebab-spinner').classList.add('ready');
-                if (upgrades[8].count > 0) claimSpinner();
-            }
-        }
-        document.getElementById('money-display').innerText = "$" + Math.floor(money).toLocaleString();
+        updateSpinner();
+        document.getElementById('money-display').innerText = "$" + formatNum(money);
     }, 100);
 
     window.onkeydown = (e) => { if(e.code === "Space") document.getElementById('shawarma').click(); };
     loadGame();
     renderShop();
-    setInterval(saveGame, 30000);
-</script> 
+    setInterval(saveGame, 15000);
+</script>
 </body>
 </html>
